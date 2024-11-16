@@ -1,62 +1,64 @@
-import type { Metadata, Viewport } from 'next'
-import { Noto_Sans_SC } from 'next/font/google'
-import '@/app/globals.css'
-import '@/app/styles/index.css'
-import { headers } from 'next/headers'
-import { cn } from '@/lib/utils'
-import { Toaster } from '@/components/ui/toaster'
+import type { Metadata, Viewport } from "next";
+import { Noto_Sans_SC } from "next/font/google";
+import "@/app/globals.css";
+import "@/app/styles/index.css";
+import { headers } from "next/headers";
+import { cn } from "../lib/utils";
+import { Toaster } from "../components/ui/toaster";
+
 
 const notoSansSc = Noto_Sans_SC({
-  subsets: ['latin'],
-  variable: '--font-noto-sans-sc',
-})
+  subsets: ["latin"],
+  variable: "--font-noto-sans-sc",
+});
 
 export const viewport: Viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-}
+};
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | OneIMG',
-    default: 'OneIMG',
+    template: "%s | OneIMG",
+    default: "OneIMG",
   },
-  description: 'OneIMG - 文字转图片应用，快速生成多种尺寸的图片',
+  description: "OneIMG - 文字转图片应用，快速生成多种尺寸的图片",
   openGraph: {
-    title: 'OneIMG',
-    description: 'OneIMG - 文字转图片应用，快速生成多种尺寸的图片',
-    url: 'https://oneimgai.com',
-    siteName: 'OneIMG',
+    title: "OneIMG",
+    description: "OneIMG - 文字转图片应用，快速生成多种尺寸的图片",
+    url: "https://oneimgai.com",
+    siteName: "OneIMG",
   },
-  metadataBase: new URL('https://oneimgai.com'),
-}
+  metadataBase: new URL("https://oneimgai.com"),
+};
 
 function getPlatform() {
-  const headersList = headers()
-  const userAgent = headersList.get('user-agent') || ''
+  const headersList = headers();
 
-  if (userAgent.includes('Win')) {
-    return 'windows'
+  const userAgent = headersList.get("user-agent") || "";
+
+  if (userAgent.includes("Win")) {
+    return "windows";
   }
-  if (userAgent.includes('Mac')) {
-    return 'mac'
+  if (userAgent.includes("Mac")) {
+    return "mac";
   }
-  if (userAgent.includes('X11')) {
-    return 'unix'
+  if (userAgent.includes("X11")) {
+    return "unix";
   }
-  if (userAgent.includes('Linux')) {
-    return 'linux'
+  if (userAgent.includes("Linux")) {
+    return "linux";
   }
-  if (userAgent.includes('Android')) {
-    return 'android'
+  if (userAgent.includes("Android")) {
+    return "android";
   }
-  if (userAgent.includes('iPhone') || userAgent.includes('iPad')) {
-    return 'ios'
+  if (userAgent.includes("iPhone") || userAgent.includes("iPad")) {
+    return "ios";
   }
 
-  return 'unknown'
+  return "unknown";
 }
 
 export default function RootLayout({
@@ -65,13 +67,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full break-words overflow-hidden" data-platform={getPlatform()}>
-      <body className={cn('h-full overflow-hidden antialiased', notoSansSc.variable)}>
+    <html
+      lang="en"
+      className="h-full break-words overflow-hidden"
+      data-platform={getPlatform()}
+    >
+      <body
+        className={cn(
+          "h-full overflow-hidden antialiased",
+          notoSansSc.variable
+        )}
+      >
         {children}
         <Toaster />
       </body>
     </html>
-  )
+  );
 }
 
-export const runtime = 'edge'
+export const runtime = "edge";

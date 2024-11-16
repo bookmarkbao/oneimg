@@ -1,18 +1,18 @@
-'use client'
-import { useRef } from 'react'
-import { ImagePlus } from 'lucide-react'
+"use client";
+import { useRef } from "react";
+import { ImagePlus } from "lucide-react";
 
-import { Button } from '@/components/ui/button'
-import type { ImageFile } from '@/types/common'
-import { compressImage, getUid } from '@/lib/utils'
-import { Input } from '@/components/ui/input'
+import { Button } from "../ui/button";
+import type { ImageFile } from "../../types/common";
+import { compressImage, getUid } from "../../lib/utils";
+import { Input } from "../ui/input";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { useToast } from '@/components/ui/use-toast'
+} from "../ui/tooltip";
+import { useToast } from "../ui/use-toast";
 
 type EditorFooterProps = {
   uploadFiles?: ImageFile[];
@@ -21,40 +21,52 @@ type EditorFooterProps = {
   outputFormat?: string;
   multiple: boolean;
   hideEditor: () => void;
-  onFilesChange: (UploadFiles?: ImageFile[]) => void
+  onFilesChange: (UploadFiles?: ImageFile[]) => void;
   setImage: ((url: string) => void) | undefined;
-}
+};
 
 export default function EditorButton(props: EditorFooterProps) {
-  const { uploadFiles, disabled, hideEditor, onFilesChange, quality, outputFormat, multiple } = props
-  const uploadRef = useRef<HTMLInputElement | null>(null)
-  const { toast } = useToast()
+  const {
+    uploadFiles,
+    disabled,
+    hideEditor,
+    onFilesChange,
+    quality,
+    outputFormat,
+    multiple,
+  } = props;
+  const uploadRef = useRef<HTMLInputElement | null>(null);
+  const { toast } = useToast();
 
   // 文件选择器改变事件
   async function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const files = event.target.files
+    const files = event.target.files;
     if (!files) {
-      return
+      return;
     }
 
-    const currentFiles = uploadFiles || []
-    const newFiles = Array.from(files)
+    const currentFiles = uploadFiles || [];
+    const newFiles = Array.from(files);
 
     // 多张照片
     if (multiple) {
       if (currentFiles.length + newFiles.length > 8) {
         toast({
-          title: '最多上传8张图片',
-          description: '最多上传8张图片',
-        })
-        return
+          title: "最多上传8张图片",
+          description: "最多上传8张图片",
+        });
+        return;
       }
 
-      const compressedFiles = await handleFiles(newFiles, quality, outputFormat)
+      const compressedFiles = await handleFiles(
+        newFiles,
+        quality,
+        outputFormat
+      );
       if (uploadFiles) {
-        onFilesChange([...uploadFiles, ...compressedFiles])
+        onFilesChange([...uploadFiles, ...compressedFiles]);
       } else {
-        onFilesChange(compressedFiles)
+        onFilesChange(compressedFiles);
       }
 
       // for (const file of compressedFiles) {
@@ -64,51 +76,55 @@ export default function EditorButton(props: EditorFooterProps) {
       // }
     } else {
       // 单张图片
-      const compressedFile = await handleFiles(newFiles, quality, outputFormat)
-      onFilesChange(compressedFile)
+      const compressedFile = await handleFiles(newFiles, quality, outputFormat);
+      onFilesChange(compressedFile);
     }
     // 允许前后两次选择相同文件
     // 在文件选择后，将 input 的值重置为空字符串，以便下次选择相同文件时能触发 onChange 事件
-    event.target.value = ''
+    event.target.value = "";
   }
 
   // 打开文件选择器
   function handleFileSelect() {
     if (uploadRef.current) {
-      uploadRef.current.click()
+      uploadRef.current.click();
     }
   }
 
-  async function handleFiles(files: File[], quality?: number, outFormat?: string): Promise<ImageFile[]> {
-    quality = quality ?? 0.5
-    outFormat = outFormat ?? 'image/jpeg'
+  async function handleFiles(
+    files: File[],
+    quality?: number,
+    outFormat?: string
+  ): Promise<ImageFile[]> {
+    quality = quality ?? 0.5;
+    outFormat = outFormat ?? "image/jpeg";
 
-    const uploadFiles: ImageFile[] = []
+    const uploadFiles: ImageFile[] = [];
 
     for (const file of files) {
       // if file is not an image
-      if (file.type.indexOf('image') === -1) {
-        const subType = file.type.split('/')[1]
+      if (file.type.indexOf("image") === -1) {
+        const subType = file.type.split("/")[1];
         toast({
           title: `不支持上传 ${subType} 文件类型`,
-          description: '',
+          description: "",
           duration: 3000,
-        })
-        continue
+        });
+        continue;
       }
 
-      const compressedBlob = await compressImage(file, quality, outFormat)
+      const compressedBlob = await compressImage(file, quality, outFormat);
 
       const uploadFile: ImageFile = {
         name: file.name,
         uid: getUid(),
         dataUrl: compressedBlob.dataUrl,
         type: file.type,
-      }
-      uploadFiles.push(uploadFile)
+      };
+      uploadFiles.push(uploadFile);
     }
 
-    return uploadFiles
+    return uploadFiles;
   }
 
   return (
@@ -127,19 +143,20 @@ export default function EditorButton(props: EditorFooterProps) {
             <TooltipTrigger asChild>
               <ImagePlus onClick={handleFileSelect} width={18} height={18} />
             </TooltipTrigger>
-            <TooltipContent
-              side="top"
-              className="text-white bg-black">
+            <TooltipContent side="top" className="text-white bg-black">
               添加正文图片
             </TooltipContent>
           </Tooltip>
         </div>
         <div className="editor-footer-actions-right flex ml-auto gap-2">
-          <Button type="button" variant="outline" onClick={hideEditor}>取消</Button>
-          <Button type="submit" disabled={disabled}>保存</Button>
+          <Button type="button" variant="outline" onClick={hideEditor}>
+            取消
+          </Button>
+          <Button type="submit" disabled={disabled}>
+            保存
+          </Button>
         </div>
       </div>
     </TooltipProvider>
-  )
+  );
 }
-

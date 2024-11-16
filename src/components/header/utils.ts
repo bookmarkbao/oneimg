@@ -4,6 +4,7 @@ import UPNG from '@pdf-lib/upng'
 import ExifReader from 'exifreader'
 import type { ExportOption } from './types'
 
+
 export async function generateImage(element: HTMLElement, option: ExportOption): Promise<Blob> {
   const canvas = await html2canvas(element, {
     scale: option.scale,

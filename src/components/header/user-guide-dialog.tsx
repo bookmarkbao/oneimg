@@ -1,12 +1,21 @@
-'use client'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+"use client";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 
 type UserGuideProps = {
-  guideModelOpen: boolean,
-  setGuideModelOpen: (open: boolean) => void
-}
+  guideModelOpen: boolean;
+  setGuideModelOpen: (open: boolean) => void;
+};
 
-export function UserGuideDialog({ guideModelOpen, setGuideModelOpen }: UserGuideProps) {
+export function UserGuideDialog({
+  guideModelOpen,
+  setGuideModelOpen,
+}: UserGuideProps) {
   return (
     <Dialog open={guideModelOpen} onOpenChange={setGuideModelOpen}>
       <DialogContent className="flex flex-col max-w-full sm:max-w-[840px] h-full sm:h-[500px] px-10 py-8 overflow-y-auto gap-4">
@@ -16,10 +25,8 @@ export function UserGuideDialog({ guideModelOpen, setGuideModelOpen }: UserGuide
             video introduction
           </DialogDescription>
         </DialogHeader>
-        <div className="flex-grow flex flex-col sm:flex-row gap-4">
-
-        </div>
+        <div className="flex-grow flex flex-col sm:flex-row gap-4"></div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

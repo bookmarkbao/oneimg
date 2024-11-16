@@ -1,35 +1,58 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
-import type { Theme, ThemeContent } from '@/types/common'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { themeColorMap, themeTemplates } from '@/lib/constants'
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Input } from "../ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "../ui/form";
+import { Button } from "../ui/button";
+import type { Theme, ThemeContent } from "../../types/common";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import { themeColorMap, themeTemplates } from "../../lib/constants";
 
 const formSchema = z.object({
   title: z.string(),
   content: z.string(),
   theme: z.string(),
-})
+});
 
 interface ThemeFormProps {
   onSubmit: (content: ThemeContent) => Promise<void>;
   open: boolean;
-  onOpenChange: (open: boolean) => void
+  onOpenChange: (open: boolean) => void;
 }
 
-export function ThemeFormDialog({ onSubmit, onOpenChange, open }: ThemeFormProps) {
+export function ThemeFormDialog({
+  onSubmit,
+  onOpenChange,
+  open,
+}: ThemeFormProps) {
   // Define a form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
-      content: '',
+      title: "",
+      content: "",
     },
-  })
+  });
 
   async function handleContentSubmit(values: z.infer<typeof formSchema>) {
     const content = {
@@ -37,11 +60,11 @@ export function ThemeFormDialog({ onSubmit, onOpenChange, open }: ThemeFormProps
       content: values.content,
       theme: values.theme,
       parentId: null,
-      themeColor: themeColorMap[(values.theme as Theme)][0].label,
-    } as ThemeContent
-    await onSubmit(content)
+      themeColor: themeColorMap[values.theme as Theme][0].label,
+    } as ThemeContent;
+    await onSubmit(content);
     // reset dialog state
-    onOpenChange(false)
+    onOpenChange(false);
   }
 
   return (
@@ -55,7 +78,10 @@ export function ThemeFormDialog({ onSubmit, onOpenChange, open }: ThemeFormProps
         </DialogHeader>
         <div className="w-full h-full">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleContentSubmit)} className="flex flex-col gap-4">
+            <form
+              onSubmit={form.handleSubmit(handleContentSubmit)}
+              className="flex flex-col gap-4"
+            >
               <FormField
                 control={form.control}
                 name="title"
@@ -100,7 +126,10 @@ export function ThemeFormDialog({ onSubmit, onOpenChange, open }: ThemeFormProps
                 render={({ field }) => (
                   <FormItem>
                     {/* <FormLabel>模版</FormLabel> */}
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger className="h-12 placeholder:text-muted-foreground">
                           <SelectValue placeholder="选择模版" />
@@ -108,8 +137,12 @@ export function ThemeFormDialog({ onSubmit, onOpenChange, open }: ThemeFormProps
                       </FormControl>
                       <SelectContent>
                         <SelectGroup>
-                          {themeTemplates.map(template => (
-                            <SelectItem key={template.value} value={template.value} disabled={template.disabled}>
+                          {themeTemplates.map((template) => (
+                            <SelectItem
+                              key={template.value}
+                              value={template.value}
+                              disabled={template.disabled}
+                            >
                               {template.label}
                             </SelectItem>
                           ))}
@@ -120,11 +153,13 @@ export function ThemeFormDialog({ onSubmit, onOpenChange, open }: ThemeFormProps
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="mt-8 h-12">保存</Button>
+              <Button type="submit" className="mt-8 h-12">
+                保存
+              </Button>
             </form>
           </Form>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
